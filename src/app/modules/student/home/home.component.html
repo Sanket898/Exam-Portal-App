@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="row my-5 p-1">
+    <h1>My Interview Portal</h1>
+    <hr />
+    <div class="col-md-12">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Test</th>
+            <th>No of Questions</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let test of tests">
+            <td>{{ test?.name }}</td>
+            <td>{{ test?.questions.length }}</td>
+            <td>
+              <button class="btn btn-warning" (click)="startTest(test?._id)">
+                Start Test
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
