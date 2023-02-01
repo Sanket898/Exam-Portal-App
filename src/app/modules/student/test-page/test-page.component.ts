@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from 'src/app/services/api-service.service';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApiService } from "src/app/services/api-service.service";
 
 @Component({
-  selector: 'app-test-page',
-  templateUrl: './test-page.component.html',
-  styleUrls: ['./test-page.component.css'],
+  selector: "app-test-page",
+  templateUrl: "./test-page.component.html",
+  styleUrls: ["./test-page.component.css"],
 })
 export class TestPageComponent implements OnInit {
   testQuestions: any = [];
@@ -14,6 +14,7 @@ export class TestPageComponent implements OnInit {
   temp: any = [];
   mySet1: any = new Set();
   results: any = [];
+  targetAdd: any = [];
   tempIndex: any;
   testId: any;
   currentPage = 0;
@@ -21,9 +22,8 @@ export class TestPageComponent implements OnInit {
     private api: ApiService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) {
-    this.testId = this.api.getTestId();
-  }
+  ) {}
+
   ngOnInit() {
     this.activatedRoute.params.subscribe((data: any) => {
       this.testId = data.testId;
@@ -33,24 +33,27 @@ export class TestPageComponent implements OnInit {
         if (res.tests[i]._id === this.testId) {
           this.testQuestions = res.tests[i].questions;
           console.log(this.testQuestions);
+          this.api.setTotalQuestions(this.testQuestions.length);
         }
       }
     });
-    this.answersArray();
-  }
-
-  answersArray() {
-    for (let i = 0; i < this.testQuestions.length; i++) {
-      this.correctAnswers.push(this.testQuestions[i].correctOptionIndex);
-    }
   }
 
   handleCheckChange(event: any, index: number) {
-    this.temp.push(parseInt(event.target.value));
-    this.mySet1 = [...this.temp];
+    let flag = true;
+    if (this.targetAdd.length > 0) {
+      for (let i = 0; i < this.targetAdd.length; i++) {
+        if (event.target.value === this.targetAdd[i].value) {
+          flag = false;
+        }
+      }
+    }
+    if (flag) {
+      this.targetAdd.push(event.target);
+    }
   }
   handleRadioChange(event: any) {
-    this.temp = event.target.value;
+    this.temp = parseInt(event.target.value);
   }
 
   prev() {
@@ -61,33 +64,44 @@ export class TestPageComponent implements OnInit {
   }
   next() {
     if (this.currentPage < this.testQuestions.length) {
+      for (let i = 0; i < this.targetAdd.length; i++) {
+        if (this.targetAdd[i].checked == true) {
+          this.temp.push(parseInt(this.targetAdd[i].value));
+        }
+      }
       this.currentPage++;
+      console.log(this.temp);
       this.answers.push(this.temp);
       this.temp = [];
-      console.log('Current Page : ', this.currentPage);
       this.correctAnswers.push(
         this.testQuestions[this.currentPage - 1].correctOptionIndex
       );
-      console.log(this.answers);
     }
   }
   finishTest() {
-    this.router.navigateByUrl('/result');
+    for (let i = 0; i < this.targetAdd.length; i++) {
+      if (this.targetAdd[i].checked == true) {
+        this.temp.push(parseInt(this.targetAdd[i].value));
+      }
+    }
+    this.router.navigateByUrl("/result");
     this.answers.push(this.temp);
     this.temp = [];
     this.correctAnswers.push(
       this.testQuestions[this.currentPage - 1].correctOptionIndex
     );
     console.log(this.answers);
-    console.log('Correct', this.correctAnswers);
+    console.log("Correct", this.correctAnswers);
     for (let i = 0; i < this.testQuestions.length; i++) {
-      if (this.correctAnswers[i] == this.answers[i]) {
+      if (
+        JSON.stringify(this.correctAnswers[i]) ==
+        JSON.stringify(this.answers[i])
+      ) {
         this.results.push(true);
       } else {
         this.results.push(false);
       }
     }
     console.log(this.results);
-    this.api.setResult(this.results);
   }
 }

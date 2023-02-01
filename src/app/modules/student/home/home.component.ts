@@ -19,8 +19,6 @@ export class HomeComponent implements OnInit {
   }
 
   startTest(id: any) {
-    console.log(id);
-    this.api.setTestId(id);
     this.router.navigateByUrl(`/test/${id}`);
   }
 }

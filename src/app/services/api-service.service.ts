@@ -1,32 +1,31 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ApiService {
-  APIURL = 'http://xapi.ngminds.com/getQuizData';
-  testId: any;
+  APIURL = "http://xapi.ngminds.com/getQuizData";
   result: any = [];
-  
+  totalQuestions: number = 0;
   constructor(private http: HttpClient) {}
 
   getData() {
     return this.http.get(this.APIURL);
   }
 
-  setTestId(id: any) {
-    this.testId = id;
-  }
-
-  getTestId() {
-    return this.testId;
-  }
   setResult(result: any) {
     this.result = result;
   }
 
   getResult() {
     return this.result;
+  }
+  setTotalQuestions(totalQuestions: any) {
+    this.totalQuestions = totalQuestions;
+  }
+
+  getTotalQuestions() {
+    return this.totalQuestions;
   }
 }
