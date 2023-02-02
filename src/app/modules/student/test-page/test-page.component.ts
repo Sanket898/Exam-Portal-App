@@ -1,20 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ApiService } from "src/app/services/api-service.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApiService } from 'src/app/services/api-service.service';
 
 @Component({
-  selector: "app-test-page",
-  templateUrl: "./test-page.component.html",
-  styleUrls: ["./test-page.component.css"],
+  selector: 'app-test-page',
+  templateUrl: './test-page.component.html',
+  styleUrls: ['./test-page.component.css'],
 })
 export class TestPageComponent implements OnInit {
   testQuestions: any = [];
   answers: any = [];
   correctAnswers: any = [];
   temp: any = [];
-  mySet1: any = new Set();
   results: any = [];
-  targetAdd: any = [];
+  eventTargetAdd: any = [];
   tempIndex: any;
   testId: any;
   currentPage = 0;
@@ -42,11 +41,11 @@ export class TestPageComponent implements OnInit {
   handleCheckChange(event: any) {
     // Checking For duplicate elements in array
     // Avoiding duplicate selection of checkboxes
-    let flag = this.targetAdd.findIndex((target: any) => {
+    let flag = this.eventTargetAdd.findIndex((target: any) => {
       return target.value === event.target.value;
     });
     if (flag == -1) {
-      this.targetAdd.push(event.target);
+      this.eventTargetAdd.push(event.target);
     }
   }
   handleRadioChange(event: any) {
@@ -61,36 +60,37 @@ export class TestPageComponent implements OnInit {
   }
   next() {
     if (this.currentPage < this.testQuestions.length) {
-      for (let i = 0; i < this.targetAdd.length; i++) {
-        if (this.targetAdd[i].checked == true) {
-          this.temp.push(parseInt(this.targetAdd[i].value));
+      for (let i = 0; i < this.eventTargetAdd.length; i++) {
+        if (this.eventTargetAdd[i].checked == true) {
+          this.temp.push(parseInt(this.eventTargetAdd[i].value));
         }
       }
       this.currentPage++;
       console.log(this.temp);
       this.answers.push(this.temp);
+      localStorage.setItem('answers', JSON.stringify(this.answers));
       this.temp = [];
-      this.targetAdd = [];
+      this.eventTargetAdd = [];
       this.correctAnswers.push(
         this.testQuestions[this.currentPage - 1].correctOptionIndex
       );
     }
   }
   finishTest() {
-    for (let i = 0; i < this.targetAdd.length; i++) {
-      if (this.targetAdd[i].checked == true) {
-        this.temp.push(parseInt(this.targetAdd[i].value));
+    for (let i = 0; i < this.eventTargetAdd.length; i++) {
+      if (this.eventTargetAdd[i].checked == true) {
+        this.temp.push(parseInt(this.eventTargetAdd[i].value));
       }
     }
-    this.router.navigateByUrl("/result");
+    this.router.navigateByUrl('/result');
     this.answers.push(this.temp);
     this.temp = [];
     this.correctAnswers.push(
       this.testQuestions[this.currentPage - 1].correctOptionIndex
     );
-    console.log("Submitted Answers : ", this.answers);
-    console.log("Correct", this.correctAnswers);
-
+    console.log('Submitted Answers : ', this.answers);
+    console.log('Correct', this.correctAnswers);
+    localStorage.removeItem('answers');
     for (let i = 0; i < this.testQuestions.length; i++) {
       if (
         JSON.stringify(this.correctAnswers[i]) ==
@@ -101,7 +101,7 @@ export class TestPageComponent implements OnInit {
         this.results.push(false);
       }
     }
-    console.log("Results Array :", this.results);
+    console.log('Results Array :', this.results);
     this.api.setResult(this.results);
   }
 }

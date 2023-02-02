@@ -7,7 +7,12 @@
           {{ currentPage + 1 }}. {{ testQuestions[currentPage]?.questionText }}
         </h2>
         <p class="text-primary mt-3">
-          {{ testQuestions[currentPage]?.type }} Type Question
+          {{
+            testQuestions[currentPage]?.type
+              ? testQuestions[currentPage]?.type
+              : "Single Response"
+          }}
+          Type Question
         </p>
       </div>
       <div
@@ -30,6 +35,7 @@
                 ? handleCheckChange($event)
                 : handleRadioChange($event)
             "
+            [checked]="answers[i]?.i"
           />
           <label class="form-check-label" for="flexCheckChecked">
             {{ options }}
@@ -40,13 +46,13 @@
   </div>
   <div class="pagination mt-3 d-flex">
     <div class="d-flex start">
-      <!-- <button
+      <button
         class="btn btn-warning mx-2"
         (click)="prev()"
         *ngIf="currentPage > 0"
       >
         Prev
-      </button> -->
+      </button>
       <button
         class="btn btn-outline-primary mx-2"
         (click)="next()"
