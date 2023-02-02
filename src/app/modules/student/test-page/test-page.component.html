@@ -27,7 +27,7 @@
             id="flexCheckChecked"
             (change)="
               testQuestions[currentPage].type
-                ? handleCheckChange($event, i)
+                ? handleCheckChange($event)
                 : handleRadioChange($event)
             "
           />
@@ -40,13 +40,13 @@
   </div>
   <div class="pagination mt-3 d-flex">
     <div class="d-flex start">
-      <button
+      <!-- <button
         class="btn btn-warning mx-2"
         (click)="prev()"
         *ngIf="currentPage > 0"
       >
         Prev
-      </button>
+      </button> -->
       <button
         class="btn btn-outline-primary mx-2"
         (click)="next()"

@@ -39,8 +39,10 @@ export class TestPageComponent implements OnInit {
     });
   }
 
-  handleCheckChange(event: any, index: number) {
+  handleCheckChange(event: any) {
     let flag = true;
+    // Checking For duplicate elements in array
+    // Avoiding duplicate selection of checkboxes
     if (this.targetAdd.length > 0) {
       for (let i = 0; i < this.targetAdd.length; i++) {
         if (event.target.value === this.targetAdd[i].value) {
@@ -73,6 +75,7 @@ export class TestPageComponent implements OnInit {
       console.log(this.temp);
       this.answers.push(this.temp);
       this.temp = [];
+      this.targetAdd = [];
       this.correctAnswers.push(
         this.testQuestions[this.currentPage - 1].correctOptionIndex
       );
@@ -90,8 +93,9 @@ export class TestPageComponent implements OnInit {
     this.correctAnswers.push(
       this.testQuestions[this.currentPage - 1].correctOptionIndex
     );
-    console.log(this.answers);
+    console.log("Submitted Answers : ", this.answers);
     console.log("Correct", this.correctAnswers);
+
     for (let i = 0; i < this.testQuestions.length; i++) {
       if (
         JSON.stringify(this.correctAnswers[i]) ==
@@ -102,6 +106,7 @@ export class TestPageComponent implements OnInit {
         this.results.push(false);
       }
     }
-    console.log(this.results);
+    console.log("Results Array :", this.results);
+    this.api.setResult(this.results);
   }
 }
