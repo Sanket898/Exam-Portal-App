@@ -40,17 +40,12 @@ export class TestPageComponent implements OnInit {
   }
 
   handleCheckChange(event: any) {
-    let flag = true;
     // Checking For duplicate elements in array
     // Avoiding duplicate selection of checkboxes
-    if (this.targetAdd.length > 0) {
-      for (let i = 0; i < this.targetAdd.length; i++) {
-        if (event.target.value === this.targetAdd[i].value) {
-          flag = false;
-        }
-      }
-    }
-    if (flag) {
+    let flag = this.targetAdd.findIndex((target: any) => {
+      return target.value === event.target.value;
+    });
+    if (flag == -1) {
       this.targetAdd.push(event.target);
     }
   }
